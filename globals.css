@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  --color-stage: #07070b;
+  --color-panel: #0e0e15;
+  --color-panel-2: #14141d;
+  --color-edge: #23232f;
+  --color-saffron: #ff7a18;
+  --color-magenta: #e0115f;
+  --color-desi: #2fae5f;
+  --color-gold: #f5d020;
+  --color-royal: #7f5bff;
+
+  --animate-marquee: marquee 42s linear infinite;
+  --animate-eq: eq 1s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-spin-slow: spin 14s linear infinite;
+  --animate-glow: glow 3.6s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes eq {
+  0%,
+  100% {
+    transform: scaleY(0.25);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-image:
+    radial-gradient(1100px 600px at 12% -8%, rgba(255, 122, 24, 0.16), transparent 60%),
+    radial-gradient(900px 520px at 92% 4%, rgba(127, 91, 255, 0.16), transparent 62%),
+    radial-gradient(700px 500px at 50% 108%, rgba(47, 174, 95, 0.12), transparent 60%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(255, 122, 24, 0.35);
+  color: #fff;
+}
+
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #2b2b3a transparent;
+}
+.scroll-thin::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: #2b2b3a;
+  border-radius: 999px;
+}
+.scroll-thin::-webkit-scrollbar-thumb:hover {
+  background: #3b3b4f;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+input[type="range"].seek {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"].seek::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--seek-track, #2a2a38);
+}
+input[type="range"].seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 13px;
+  width: 13px;
+  margin-top: -4px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+input[type="range"].seek:hover::-webkit-slider-thumb,
+input[type="range"].seek:focus::-webkit-slider-thumb {
+  opacity: 1;
+}
+input[type="range"].seek::-moz-range-track {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--seek-track, #2a2a38);
+}
+input[type="range"].seek::-moz-range-thumb {
+  height: 13px;
+  width: 13px;
+  border: none;
+  border-radius: 999px;
+  background: #fff;
+}
