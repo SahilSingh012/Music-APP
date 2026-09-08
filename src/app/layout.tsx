@@ -1,20 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Bricolage_Grotesque, Manrope } from "next/font/google";
 import "./globals.css";
 import { PwaManager } from "@/components/pwa";
 
-const display = Bricolage_Grotesque({
-  subsets: ["latin"],
-  variable: "--font-bricolage",
-  weight: ["400", "600", "700", "800"],
-});
-
-const sans = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope",
-  weight: ["400", "500", "600", "700", "800"],
-});
+/**
+ * Fonts are loaded from the Google Fonts CDN via <link> rather than
+ * `next/font/google`. `next/font` downloads the files at build time, which
+ * makes the production build fail in any sandboxed / offline / firewalled CI
+ * environment. The <link> approach keeps the exact same typefaces at runtime
+ * and degrades to the system stack if the CDN is unreachable.
+ */
+const FONT_HREF =
+  "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap";
 
 export const metadata: Metadata = {
   title: "RanaSongs — Punjabi, Haryanvi & Hindi songs, no login",
@@ -46,7 +43,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href={FONT_HREF} />
+      </head>
       <body className="bg-stage font-sans text-zinc-100 antialiased">
         {children}
         <PwaManager />
