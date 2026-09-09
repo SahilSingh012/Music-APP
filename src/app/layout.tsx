@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
-import { PwaManager } from "@/components/pwa";
+import { PWA } from "@/components/pwa";
 
 /**
  * Fonts are loaded from the Google Fonts CDN via <link> rather than
@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="bg-stage font-sans text-zinc-100 antialiased">
         {children}
-        <PwaManager />
+        <PWA />
       </body>
     </html>
   );

@@ -22,14 +22,34 @@ import {
   type YtHandles,
 } from "@/components/yt-engine";
 import { Icon } from "@/components/ui";
-// iOS Background Audio Keep-Alive Bridge
-const silentAudio = typeof window !== 'undefined' 
-  ? new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==")
-  : null;
+// Background audio keep-alive
+const silentAudio =
+  typeof window !== "undefined"
+    ? new Audio(
+        "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==",
+      )
+    : null;
 
 if (silentAudio) {
   silentAudio.loop = true;
+  silentAudio.volume = 0.01;
+  silentAudio.preload = "auto";
 }
+
+const startBackgroundAudio = () => {
+  if (!silentAudio) return;
+
+  silentAudio.play().catch(() => {
+    // Browser may block until the next user interaction.
+  });
+};
+
+const stopBackgroundAudio = () => {
+  if (!silentAudio) return;
+
+  silentAudio.pause();
+  silentAudio.currentTime = 0;
+};
 
 export type Route =
   | { name: "home" }
@@ -454,8 +474,12 @@ export function PlayerProvider({
   );
 
   const startSong = useCallback(
-    (song: SongDTO | undefined, autoplay: boolean) => {
-      if (!song) return;
+  (song: SongDTO | undefined, autoplay: boolean) => {
+    if (!song) return;
+
+    if (autoplay) {
+      startBackgroundAudio();
+    }
       requestRef.current += 1;
       forceRetriedRef.current = false;
       setAudioError(null);
@@ -578,9 +602,7 @@ export function PlayerProvider({
     }
     if (handles && videoId) {
       setAudioError(null);
-      if (silentAudio){
-        silentAudio.play().catch(() => {});
-      }
+      startBackgroundAudio();
       handles.play();
       return;
     }
@@ -646,6 +668,23 @@ export function PlayerProvider({
       return !open;
     });
   }, []);
+
+  /* ---------------- background playback ---------------- */
+useEffect(() => {
+  const handleVisibilityChange = () => {
+    if (document.visibilityState === "visible") {
+      if (isPlaying) {
+        startBackgroundAudio();
+      }
+    }
+  };
+
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+
+  return () => {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+  };
+}, [isPlaying]);
 
   /* ---------------- progress polling ---------------- */
   useEffect(() => {
