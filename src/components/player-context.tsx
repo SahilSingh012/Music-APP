@@ -22,6 +22,14 @@ import {
   type YtHandles,
 } from "@/components/yt-engine";
 import { Icon } from "@/components/ui";
+// iOS Background Audio Keep-Alive Bridge
+const silentAudio = typeof window !== 'undefined' 
+  ? new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==")
+  : null;
+
+if (silentAudio) {
+  silentAudio.loop = true;
+}
 
 export type Route =
   | { name: "home" }
@@ -570,6 +578,9 @@ export function PlayerProvider({
     }
     if (handles && videoId) {
       setAudioError(null);
+      if (silentAudio){
+        silentAudio.play().catch(() => {});
+      }
       handles.play();
       return;
     }
