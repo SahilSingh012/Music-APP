@@ -1030,8 +1030,8 @@ useEffect(() => {
             </button>
           </div>
         </div>
-        <div className={videoOpen ? "aspect-video w-full" : "aspect-video w-full"}>
-          <div ref={hostRef} className="h-full w-full [&_iframe]:h-full [&_iframe]:w-full [&_iframe]:border-0" />
+        <div className="fixed left-[-9999px] top-[-9999px] w-[1px] h-[1px] overflow-hidden opacity-0 pointer-events-none">
+          <div ref={hostRef} />
         </div>
       </div>
     </PlayerContext.Provider>

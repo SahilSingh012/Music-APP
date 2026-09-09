@@ -113,8 +113,8 @@ export async function createYtPlayer(
     window._iosAudioBridge = audio;
   }
   const player = new YT.Player(host, {
-    width: "100%",
-    height: "100%",
+  width: "1",
+  height: "1",
     playerVars: {
       autoplay: 0,
       controls: 0,
