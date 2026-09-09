@@ -8,6 +8,12 @@
  * streamed through YouTube's own embed, no login and no API key.
  */
 
+declare global {
+  interface Window {
+    _iosAudioBridge?: HTMLAudioElement;
+  }
+}
+
 let apiPromise: Promise<void> | null = null;
 
 export function loadYouTubeApi(): Promise<void> {
@@ -100,7 +106,12 @@ export async function createYtPlayer(
   await loadYouTubeApi();
   const YT = window.YT;
   if (!YT?.Player) throw new Error("YouTube API unavailable");
-
+// Native Audio Bridge to trick iOS MediaSession
+  if (typeof window !== "undefined" && !window._iosAudioBridge) {
+    const audio = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==");
+    audio.loop = true;
+    window._iosAudioBridge = audio;
+  }
   const player = new YT.Player(host, {
     width: "100%",
     height: "100%",
@@ -137,7 +148,12 @@ export async function createYtPlayer(
         else player.cueVideoById(videoId);
       }, undefined);
     },
-    play: () => safe(() => player.playVideo(), undefined),
+    play: () => safe(() => {
+      if (window._iosAudioBridge) {
+        window._iosAudioBridge.play().catch(() => {});
+      }
+      return player.playVideo();
+    }, undefined),
     pause: () => safe(() => player.pauseVideo(), undefined),
     seek: (seconds) => safe(() => player.seekTo(seconds, true), undefined),
     setVolume: (zeroToOne) =>
